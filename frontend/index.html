@@ -281,14 +281,18 @@
             emitter.start(true, 2000, null, 4);
 
             var resource = fruit.data;
-            fetch(
-                backend+'/destroy/ns/'+resource.namespace+"/"+resource.type+"/"+resource.name,
-                {method: 'POST'});
+            if (resource) {
+                fetch(
+                    backend+'/destroy/ns/'+resource.namespace+"/"+resource.type+"/"+resource.name,
+                    {method: 'POST'});
+            }
             fruit.data = {};
 
             label = fruit.children[0];
-            label.destroy();
-            fruit.removeChildren();
+            if (label) {
+                label.destroy();
+                fruit.removeChildren();
+            }
 
             fruit.kill();
             points = [];

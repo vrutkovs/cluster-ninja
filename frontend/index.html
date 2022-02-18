@@ -134,6 +134,13 @@
             }
         }
 
+        async function getRandomResource() {
+            fetch(backend + '/gimme')
+                .then(response => response.json())
+                .then(data => {return data});
+
+        }
+
         function throwGoodObject() {
             var obj = getRandomDead(good_objects);
             obj.reset(getRandomX(), game.world.height);
@@ -142,20 +149,15 @@
             obj.height = obj.width = fruitSize;
             obj.body.angularAcceleration = getRandomAngularAcceleration();
             game.physics.arcade.moveToXY(obj, game.world.centerX, game.world.centerY, getRandomSpeed());
-            var resource = getRandomResource();
-            resourceText = "ns/"+ resource.namespace + "\n"+resource.type + "/" + resource.name;
-            var label = game.add.text(0, 0, resourceText, label_style);
-            label.alpha = 0.7;
-            labels[obj.key] = label;
-            resources[obj.key] = resource;
+            getRandomResource().then(resource => {
+                resourceText = "ns/"+ resource.namespace + "\n"+resource.type + "/" + resource.name;
+                var label = game.add.text(0, 0, resourceText, label_style);
+                label.alpha = 0.7;
+                labels[obj.key] = label;
+                resources[obj.key] = resource;
+            })
         }
 
-        function getRandomResource() {
-            fetch(backend + '/gimme')
-                .then(response => response.json())
-                .then(data => {return data});
-
-        }
 
         function throwBadObject() {
             var obj = bad_objects.getFirstDead();

@@ -60,7 +60,7 @@ spec:
         value: latest
       - name: SCRIPT
         value: |
-          -n $(params.namespace) wait --for=condition=available --timeout=60s deployment/backend
+          oc -n $(params.namespace) wait --for=condition=available --timeout=60s deployment/backend
       runAfter:
       - build-backend
     - name: build-frontend
@@ -88,6 +88,6 @@ spec:
         value: latest
       - name: SCRIPT
         value: |
-          -n $(params.namespace) wait --for=condition=available --timeout=60s deployment/frontend
+          oc -n $(params.namespace) wait --for=condition=available --timeout=60s deployment/frontend
       runAfter:
       - build-frontend

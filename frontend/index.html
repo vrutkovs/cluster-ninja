@@ -62,7 +62,8 @@
             fill: "#ffffff",
             wordWrap: true,
             wordWrapWidth: fruitSize,
-            align: "center",
+            boundsAlignH: "center",
+            boundsAlignV: "middle",
         };
 
         function create() {
@@ -144,6 +145,7 @@
             getRandomResource().then(resource => {
                 resourceText = "ns/"+ resource.namespace + "\n"+resource.type + "/" + resource.name;
                 var label = game.add.text(0, 0, resourceText, label_style);
+                label.setTextBounds(0, 100, 800, 100);
                 label.alpha = 0.7;
                 obj.addChild(label);
 

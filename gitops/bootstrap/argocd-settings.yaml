@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: openshift-gitops
+  namespace: openshift-gitops
+  labels:
+    app.kubernetes.io/instance: openshift-gitops
+spec:
+  server:
+    route:
+      annotations: {}
+      enabled: true
+      path: /
+      TLS:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: passthrough
+      wildcardPolicy: None
+    insecure: false
+    resources: {}
+  dex:
+    openShiftOAuth: true
+  rbac:
+    defaultPolicy: 'role:admin'
+  resourceCustomizations: |
+    route.openshift.io/Route:
+      ignoreDifferences: |
+        jsonPointers:
+        - /spec/host
+    image.openshift.io/ImageStream:
+      ignoreDifferences: |
+        jqPathExpressions:
+        - .spec.tags[]?.generation
+        - .spec.tags[]?.annotations
+  resourceExclusions: |
+    - apiGroups:
+      - tekton.dev
+      clusters:
+      - '*'
+      kinds:
+      - PipelineRun
+      - TaskRun

@@ -20,3 +20,10 @@ func (k *K8sAPI) listStatefulsets(namespace string) ([]string, error) {
 	}
 	return result, nil
 }
+
+func (k *K8sAPI) killStatefulset(namespace, name string) error {
+	if err := k.c.AppsV1().StatefulSets(namespace).Delete(k.ctx, name, metav1.DeleteOptions{}); err != nil {
+		return fmt.Errorf("failed to kill statefulset: %v", err)
+	}
+	return nil
+}

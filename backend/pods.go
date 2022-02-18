@@ -30,3 +30,10 @@ func (k *K8sAPI) listPods(namespace string) ([]string, error) {
 	}
 	return result, nil
 }
+
+func (k *K8sAPI) killPod(namespace, name string) error {
+	if err := k.c.CoreV1().Pods(namespace).Delete(k.ctx, name, metav1.DeleteOptions{}); err != nil {
+		return fmt.Errorf("failed to kill pod: %v", err)
+	}
+	return nil
+}

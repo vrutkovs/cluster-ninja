@@ -53,3 +53,14 @@ func (k *K8sAPI) listResources(namespace, resourceType string) ([]string, error)
 		return nil, nil
 	}
 }
+
+func (k *K8sAPI) killResource(namespace, resourceType, name string) {
+	switch resourceType {
+	case "pod":
+		k.killPod(namespace, name)
+	case "statefulset":
+		k.killStatefulset(namespace, name)
+	case "deployment":
+		k.killDeployment(namespace, name)
+	}
+}

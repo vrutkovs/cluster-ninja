@@ -63,8 +63,12 @@ func handleGimme(c *gin.Context) {
 }
 
 func handleKill(c *gin.Context) {
-	_, ok := c.Keys["k8s"].(*K8sAPI)
+	k8s, ok := c.Keys["k8s"].(*K8sAPI)
 	if !ok {
 		log.Panic("Failed to get k8s api")
 	}
+	namespace := c.Param("namespace")
+	resourceType := c.Param("type")
+	name := c.Param("name")
+	go k8s.killResource(namespace, resourceType, name)
 }

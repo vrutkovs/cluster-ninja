@@ -36,6 +36,4 @@ spec:
             - containerPort: 8080
               protocol: TCP
           resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
       serviceAccount: ripper

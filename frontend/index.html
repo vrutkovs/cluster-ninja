@@ -135,10 +135,9 @@
         }
 
         async function getRandomResource() {
-            fetch(backend + '/gimme')
-                .then(response => response.json())
-                .then(data => {return data});
-
+            const response = await fetch(backend + '/gimme')
+            const data = await response.json();
+            return data;
         }
 
         function throwGoodObject() {

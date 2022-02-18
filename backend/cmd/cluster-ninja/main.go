@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -57,13 +58,16 @@ func handleGimme(c *gin.Context) {
 	for i := 0; i < attempts; i++ {
 		// Get random resource type
 		resourceType = resourceTypes[rand.Intn(len(resourceTypes))]
+		log.Println(fmt.Sprintf("random resource type: %v", resourceType))
 		// Get resource names of selected type in selected namespace
 		resources, err = k8s.ListResources(namespace, resourceType)
 		if err != nil {
 			// Restart again
+			log.Println("failed to find resources in this namespace, retrying")
 			continue
 		}
 		name = resources[rand.Intn(len(resources))]
+		log.Println(fmt.Sprintf("random resource name: %v", name))
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -81,5 +85,6 @@ func handleKill(c *gin.Context) {
 	namespace := c.Param("namespace")
 	resourceType := c.Param("type")
 	name := c.Param("name")
+	log.Println(fmt.Sprintf("Killing %s %s in namespace %s", resourceType, name, namespace))
 	go k8s.KillResource(namespace, resourceType, name)
 }

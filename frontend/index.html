@@ -61,7 +61,7 @@
         var nextFire = 0;
         var scoreToWin = 10;
         var label_style = {
-            fill: "#ff0044",
+            fill: "#ffffff",
             wordWrap: true,
             wordWrapWidth: fruitSize,
             align: "center",
@@ -84,7 +84,7 @@
             emitter.setYSpeed(-400, 400);
 
             fontSize = game.world.width < 500 ? 24 : 40;
-            label_style.font = fontSize + "px Arial";
+            label_style.font = fontSize-5 + "px Arial";
             fruitSize = Math.round(Math.min(game.world.width, game.world.height) * 0.25);
 
             createText();

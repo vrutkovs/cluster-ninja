@@ -20,8 +20,12 @@ var resourceTypes = []string{
 func main() {
 	r := gin.Default()
 	r.Use(K8S())
-	r.GET("/gimme", handleGimme)
-	r.POST("/destroy/ns/:namespace/:type/:name", handleKill)
+	api := r.Group("/api")
+	{
+		api.GET("/gimme", handleGimme)
+		api.POST("/destroy/ns/:namespace/:type/:name", handleKill)
+	}
+
 	r.Run()
 }
 

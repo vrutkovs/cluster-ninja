@@ -64,11 +64,14 @@ func handleGimme(c *gin.Context) {
 		resources, err = k8s.ListResources(namespace, resourceType)
 		if err != nil {
 			// Restart again
-			log.Println("failed to find resources in this namespace, retrying")
 			continue
 		}
 		name = resources[rand.Intn(len(resources))]
 		log.Println(fmt.Sprintf("random resource: %s/%s in %s namespace", resourceType, name, namespace))
+	}
+	if len(name) == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{

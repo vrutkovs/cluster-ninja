@@ -63,6 +63,5 @@ func (k *K8sAPI) GetRandomNamespace() (string, error) {
 	}
 
 	randomNamespace := nsList[rand.Intn(len(nsList))]
-	log.Println(fmt.Sprintf("random namespace: %v", randomNamespace))
 	return randomNamespace, nil
 }

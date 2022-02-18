@@ -59,7 +59,6 @@ func handleGimme(c *gin.Context) {
 
 		// Get random resource type
 		resourceType = resourceTypes[rand.Intn(len(resourceTypes))]
-		log.Println(fmt.Sprintf("random resource type: %v", resourceType))
 		// Get resource names of selected type in selected namespace
 		resources, err = k8s.ListResources(namespace, resourceType)
 		if err != nil {

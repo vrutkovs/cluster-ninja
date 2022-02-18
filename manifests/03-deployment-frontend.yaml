@@ -11,7 +11,7 @@ metadata:
     component: frontend
   name: frontend
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: cluster-ninja

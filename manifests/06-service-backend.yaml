@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ui
-  namespace: pod-hunt
+  name: backend
 spec:
   selector:
-    app: hunt-ui
+    app: cluster-ninja
+    component: backend
   ports:
     - protocol: TCP
       port: 8080

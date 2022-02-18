@@ -4,17 +4,18 @@ metadata:
   annotations:
     image.openshift.io/triggers: |
       [
-        {"from":{"kind":"ImageStreamTag","name":"hunt-backend:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"hunt-backend\")].image"}
+        {"from":{"kind":"ImageStreamTag","name":"cluster-ninja:backend"},"fieldPath":"spec.template.spec.containers[?(@.name==\"cluster-ninja\")].image"}
       ]
   labels:
-    app: hunt-backend
-  name: hunt-backend
-  namespace: pod-hunt
+    app: cluster-ninja
+    component: backend
+  name: cluster-ninja
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hunt-backend
+      app: cluster-ninja
+      component: backend
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -24,12 +25,13 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: hunt-backend
+        app: cluster-ninja
+        component: backend
     spec:
       containers:
         - image: ' '
           imagePullPolicy: Always
-          name: hunt-backend
+          name: cluster-ninja
           ports:
             - containerPort: 8080
               protocol: TCP
@@ -40,6 +42,4 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
-      serviceAccount: ripper
-      serviceAccountName: ripper
       terminationGracePeriodSeconds: 30

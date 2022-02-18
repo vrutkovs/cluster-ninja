@@ -4,17 +4,18 @@ metadata:
   annotations:
     image.openshift.io/triggers: |
       [
-        {"from":{"kind":"ImageStreamTag","name":"hunt-ui:webserver"},"fieldPath":"spec.template.spec.containers[?(@.name==\"hunt-ui\")].image"}
+        {"from":{"kind":"ImageStreamTag","name":"cluster-ninja:frontend"},"fieldPath":"spec.template.spec.containers[?(@.name==\"cluster-ninja\")].image"}
       ]
   labels:
-    app: hunt-ui
-  name: hunt-ui
-  namespace: pod-hunt
+    app: cluster-ninja
+    component: frontend
+  name: cluster-ninja
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hunt-ui
+      app: cluster-ninja
+      component: frontend
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -24,12 +25,13 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: hunt-ui
+        app: cluster-ninja
+        component: frontend
     spec:
       containers:
         - image: ' '
           imagePullPolicy: Always
-          name: hunt-ui
+          name: cluster-ninja
           ports:
             - containerPort: 8080
               protocol: TCP

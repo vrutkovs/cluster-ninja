@@ -56,7 +56,9 @@ spec:
         name: openshift-client
         kind: ClusterTask
       params:
-      - name: ARGS
+      - name: VERSION
+        value: latest
+      - name: SCRIPT
         value: |
           -n $(params.namespace) wait --for=condition=available --timeout=60s deployment/backend
       runAfter:
@@ -82,7 +84,9 @@ spec:
         name: openshift-client
         kind: ClusterTask
       params:
-      - name: ARGS
+      - name: VERSION
+        value: latest
+      - name: SCRIPT
         value: |
           -n $(params.namespace) wait --for=condition=available --timeout=60s deployment/frontend
       runAfter:

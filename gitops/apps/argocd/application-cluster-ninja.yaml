@@ -13,7 +13,8 @@ spec:
     repoURL: 'https://github.com/vrutkovs/cluster-ninja'
     targetRevision: HEAD
   syncPolicy:
-    automated: {}
+    automated:
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
   ignoreDifferences:

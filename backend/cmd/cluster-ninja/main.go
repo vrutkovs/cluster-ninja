@@ -47,15 +47,16 @@ func handleGimme(c *gin.Context) {
 	if !ok {
 		log.Panic("Failed to get k8s api")
 	}
-	// Get random namespace
-	namespace, err := k8s.GetRandomNamespace()
-	if err != nil {
-		log.Panic("Failed to get random namespace")
-	}
-
-	var resourceType, name string
+	var namespace, resourceType, name string
 	var resources []string
+	var err error
 	for i := 0; i < attempts; i++ {
+		// Get random namespace
+		namespace, err = k8s.GetRandomNamespace()
+		if err != nil {
+			log.Panic("Failed to get random namespace")
+		}
+
 		// Get random resource type
 		resourceType = resourceTypes[rand.Intn(len(resourceTypes))]
 		log.Println(fmt.Sprintf("random resource type: %v", resourceType))
@@ -67,7 +68,7 @@ func handleGimme(c *gin.Context) {
 			continue
 		}
 		name = resources[rand.Intn(len(resources))]
-		log.Println(fmt.Sprintf("random resource name: %v", name))
+		log.Println(fmt.Sprintf("random resource: %s/%s in %s namespace", resourceType, name, namespace))
 	}
 
 	c.JSON(http.StatusOK, gin.H{

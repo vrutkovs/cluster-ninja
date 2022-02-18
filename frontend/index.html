@@ -35,7 +35,7 @@
             render: render
         });
 
-        var fruits = ['apple', 'banana', 'cherry', 'dragon-fruit', 'orange', 'pineapple', 'pumpkin', 'strawberry'];
+        var fruits = ['apple', 'banana', 'cherry', 'orange', 'pineapple', 'pumpkin', 'strawberry'];
 
         function preload() {
             fruits.forEach(fruit => game.load.image(fruit, `images/fruits/${fruit}.png`));
@@ -140,13 +140,9 @@
             return data;
         }
 
-        function throwGoodObject() {
+        async function throwGoodObject() {
             var obj = getRandomDead(good_objects);
-            obj.reset(getRandomX(), game.world.height);
-            obj.anchor.setTo(0.5, 0.5);
-            obj.angle = getRandomStartingAngle();
-            obj.height = obj.width = fruitSize;
-            obj.body.angularAcceleration = getRandomAngularAcceleration();
+
             getRandomResource().then(resource => {
                 resourceText = "ns/"+ resource.namespace + "\n"+resource.type + "/" + resource.name;
                 var label = game.add.text(0, 0, resourceText, label_style);
@@ -154,6 +150,11 @@
                 labels[obj.key] = label;
                 resources[obj.key] = resource;
 
+                obj.anchor.setTo(0.5, 0.5);
+                obj.angle = getRandomStartingAngle();
+                obj.height = obj.width = fruitSize;
+                obj.body.angularAcceleration = getRandomAngularAcceleration();
+                obj.reset(getRandomX(), game.world.height);
                 game.physics.arcade.moveToXY(obj, game.world.centerX, game.world.centerY, getRandomSpeed());
             })
         }

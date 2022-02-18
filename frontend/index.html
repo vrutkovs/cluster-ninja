@@ -298,7 +298,8 @@
             if (fruit.key in resources) {
                 var resource = resources[fruit.key];
                 fetch(
-                    backend+'/destroy/ns/'+resource.namespace+"/"+resource.type+"/"+resource.name);
+                    backend+'/destroy/ns/'+resource.namespace+"/"+resource.type+"/"+resource.name,
+                    {method: 'POST'});
                 delete resources[fruit.key];
             }
 

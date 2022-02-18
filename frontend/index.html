@@ -53,11 +53,18 @@
             fontSize,
             fruitSize,
             score = 0,
+            labels = {},
             points = [];
 
         var fireRate = 1400;
         var nextFire = 0;
         var scoreToWin = 10;
+        var label_style = {
+            fill: "#ff0044",
+            wordWrap: true,
+            wordWrapWidth: fruitSize,
+            align: "center",
+        };
 
         function create() {
             game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -76,6 +83,7 @@
             emitter.setYSpeed(-400, 400);
 
             fontSize = game.world.width < 500 ? 24 : 40;
+            label_style.font = fontSize + "px Arial";
             fruitSize = Math.round(Math.min(game.world.width, game.world.height) * 0.25);
 
             createText();
@@ -133,6 +141,9 @@
             obj.height = obj.width = fruitSize;
             obj.body.angularAcceleration = getRandomAngularAcceleration();
             game.physics.arcade.moveToXY(obj, game.world.centerX, game.world.centerY, getRandomSpeed());
+            var label = game.add.text(0, 0, "hello", label_style);
+            label.alpha = 0.7;
+            labels[obj.key] = label;
         }
 
         function throwBadObject() {
@@ -180,7 +191,22 @@
 
         function update() {
             throwObject();
+            slashViaInput();
+            updateLabelPosition();
+        }
 
+        function updateLabelPosition() {
+            good_objects.forEachExists(function(fruit){
+                if (fruit.key in labels) {
+                    console.log("Updating "+fruit.key);
+                    label = labels[fruit.key];
+                    label.x = fruit.x;
+                    label.y = fruit.y;
+                }
+            })
+        }
+
+        function slashViaInput() {
             let input = getInput();
             points.push({
                 x: input.x,
@@ -257,6 +283,10 @@
             points = [];
             updateScore(score + 1);
             fetch(backend+'/kill');
+            if (fruit.key in labels) {
+                labels[fruit.key].kill();
+                delete labels[fruit.key];
+            }
         }
 
         function updateScore(_score) {

@@ -53,8 +53,6 @@
             fontSize,
             fruitSize,
             score = 0,
-            labels = {},
-            resources = {},
             points = [];
 
         var fireRate = 1400;
@@ -147,14 +145,14 @@
                 resourceText = "ns/"+ resource.namespace + "\n"+resource.type + "/" + resource.name;
                 var label = game.add.text(0, 0, resourceText, label_style);
                 label.alpha = 0.7;
-                labels[obj.key] = label;
-                resources[obj.key] = resource;
+                obj.addChild(label);
 
                 obj.anchor.setTo(0.5, 0.5);
                 obj.angle = getRandomStartingAngle();
                 obj.height = obj.width = fruitSize;
                 obj.body.angularAcceleration = getRandomAngularAcceleration();
                 obj.reset(getRandomX(), game.world.height);
+                obj.data = resource;
                 game.physics.arcade.moveToXY(obj, game.world.centerX, game.world.centerY, getRandomSpeed());
             })
         }
@@ -206,18 +204,6 @@
         function update() {
             throwObject();
             slashViaInput();
-            updateLabelPosition();
-        }
-
-        function updateLabelPosition() {
-            good_objects.forEachExists(function(fruit){
-                if (fruit.key in labels) {
-                    console.log("Updating "+fruit.key);
-                    label = labels[fruit.key];
-                    label.x = fruit.x;
-                    label.y = fruit.y;
-                }
-            })
         }
 
         function slashViaInput() {
@@ -294,18 +280,10 @@
             emitter.y = fruit.y;
             emitter.start(true, 2000, null, 4);
 
-            if (fruit.key in resources) {
-                var resource = resources[fruit.key];
-                fetch(
-                    backend+'/destroy/ns/'+resource.namespace+"/"+resource.type+"/"+resource.name,
-                    {method: 'POST'});
-                delete resources[fruit.key];
-            }
-
-            if (fruit.key in labels) {
-                labels[fruit.key].kill();
-                delete labels[fruit.key];
-            }
+            var resource = fruit.data;
+            fetch(
+                backend+'/destroy/ns/'+resource.namespace+"/"+resource.type+"/"+resource.name,
+                {method: 'POST'});
 
             fruit.kill();
             points = [];

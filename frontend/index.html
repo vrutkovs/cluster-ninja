@@ -143,7 +143,8 @@
             obj.body.angularAcceleration = getRandomAngularAcceleration();
             game.physics.arcade.moveToXY(obj, game.world.centerX, game.world.centerY, getRandomSpeed());
             var resource = getRandomResource();
-            var label = game.add.text(0, 0, resource, label_style);
+            resourceText = "ns/"+ resource.namespace + "\n"+resource.type + "/" + resource.name;
+            var label = game.add.text(0, 0, resourceText, label_style);
             label.alpha = 0.7;
             labels[obj.key] = label;
             resources[obj.key] = resource;
@@ -151,7 +152,7 @@
 
         function getRandomResource() {
             fetch(backend + '/gimme')
-                .then(response => response.blob())
+                .then(response => response.json())
                 .then(data => {return data});
 
         }
@@ -294,7 +295,8 @@
             updateScore(score + 1);
 
             if (fruit.key in resources) {
-                fetch(backend+'/destroy'+resources[fruit.key]);
+                var resource = resources[fruit.key];
+                fetch(backend+'/destroy/ns'+resource.namespace+"/"+resource.type+"/"+resource.name);
                 delete resources[fruit.key];
             }
 

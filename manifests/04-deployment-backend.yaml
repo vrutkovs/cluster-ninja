@@ -9,7 +9,7 @@ metadata:
   labels:
     app: cluster-ninja
     component: backend
-  name: cluster-ninja
+  name: backend
 spec:
   replicas: 1
   selector:

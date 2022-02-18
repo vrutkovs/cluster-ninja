@@ -11,9 +11,9 @@ spec:
       annotations: {}
       enabled: true
       path: /
-      TLS:
+      tls:
         insecureEdgeTerminationPolicy: Redirect
-        termination: passthrough
+        termination: edge
       wildcardPolicy: None
     insecure: false
     resources: {}

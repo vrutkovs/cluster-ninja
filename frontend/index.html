@@ -144,10 +144,15 @@
 
             getRandomResource().then(resource => {
                 resourceText = "ns/"+ resource.namespace + "\n"+resource.type + "/" + resource.name;
-                var label = game.add.text(0, 0, resourceText, label_style);
-                label.setTextBounds(0, 100, 800, 100);
-                label.alpha = 0.7;
-                obj.addChild(label);
+                if (obj.children.length == 0) {
+                    var label = game.add.text(0, 0, resourceText, label_style);
+                    label.setTextBounds(0, 100, 800, 100);
+                    label.alpha = 0.7;
+                    obj.addChild(label);
+                } else {
+                    label = obj.getChildAt(0);
+                    label.text = resourceText;
+                }
 
                 obj.anchor.setTo(0.5, 0.5);
                 obj.angle = getRandomStartingAngle();
@@ -289,13 +294,6 @@
                     {method: 'POST'});
             }
             fruit.data = {};
-
-            label = fruit.children[0];
-            if (label) {
-                label.destroy();
-                fruit.removeChildren();
-            }
-
             fruit.kill();
             points = [];
             updateScore(score + 1);

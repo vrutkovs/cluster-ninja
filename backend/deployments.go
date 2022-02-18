@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -9,8 +8,7 @@ import (
 
 func (k *K8sAPI) listDeployments(namespace string) ([]string, error) {
 	var result []string
-	ctx := context.TODO()
-	deployments, err := k.c.AppsV1().Deployments(namespace).List(ctx, metav1.ListOptions{})
+	deployments, err := k.c.AppsV1().Deployments(namespace).List(k.ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("error fetching deployments")
 	}

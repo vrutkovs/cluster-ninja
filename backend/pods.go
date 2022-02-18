@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 
 	coreapi "k8s.io/api/core/v1"
@@ -10,8 +9,7 @@ import (
 
 func (k *K8sAPI) listPods(namespace string) ([]string, error) {
 	var result []string
-	ctx := context.TODO()
-	pods, err := k.c.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
+	pods, err := k.c.CoreV1().Pods(namespace).List(k.ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("error fetching pods")
 	}

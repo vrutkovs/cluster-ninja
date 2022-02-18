@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"math/rand"
 	"time"
 
@@ -15,7 +16,8 @@ var resourceTypes = []string{
 }
 
 type K8sAPI struct {
-	c *k8s.Clientset
+	c   *k8s.Clientset
+	ctx context.Context
 }
 
 func NewK8sAPI() (*K8sAPI, error) {
@@ -32,8 +34,10 @@ func NewK8sAPI() (*K8sAPI, error) {
 	if err != nil {
 		return nil, err
 	}
+	ctx := context.TODO()
 	return &K8sAPI{
-		c: clientSet,
+		c:   clientSet,
+		ctx: ctx,
 	}, nil
 }
 

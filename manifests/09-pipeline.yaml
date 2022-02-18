@@ -11,7 +11,7 @@ spec:
       description: Git repository url
     - name: gitRevision
       description: Git revision to check out
-      default: master
+      default: main
     - name: namespace
       description: Namespace to push images to
       default: cluster-ninja

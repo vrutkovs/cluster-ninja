@@ -147,13 +147,14 @@
             obj.angle = getRandomStartingAngle();
             obj.height = obj.width = fruitSize;
             obj.body.angularAcceleration = getRandomAngularAcceleration();
-            game.physics.arcade.moveToXY(obj, game.world.centerX, game.world.centerY, getRandomSpeed());
             getRandomResource().then(resource => {
                 resourceText = "ns/"+ resource.namespace + "\n"+resource.type + "/" + resource.name;
                 var label = game.add.text(0, 0, resourceText, label_style);
                 label.alpha = 0.7;
                 labels[obj.key] = label;
                 resources[obj.key] = resource;
+
+                game.physics.arcade.moveToXY(obj, game.world.centerX, game.world.centerY, getRandomSpeed());
             })
         }
 

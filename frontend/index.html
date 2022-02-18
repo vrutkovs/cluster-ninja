@@ -284,6 +284,11 @@
             fetch(
                 backend+'/destroy/ns/'+resource.namespace+"/"+resource.type+"/"+resource.name,
                 {method: 'POST'});
+            fruit.data = {};
+
+            label = fruit.children[0];
+            label.destroy();
+            fruit.removeChildren();
 
             fruit.kill();
             points = [];

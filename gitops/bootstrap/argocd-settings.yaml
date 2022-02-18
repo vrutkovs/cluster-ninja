@@ -13,7 +13,7 @@ spec:
       path: /
       tls:
         insecureEdgeTerminationPolicy: Redirect
-        termination: edge
+        termination: reencrypt
       wildcardPolicy: None
     insecure: false
     resources: {}

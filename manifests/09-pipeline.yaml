@@ -9,11 +9,14 @@ spec:
   params:
     - name: gitUrl
       description: Git repository url
+      type: string
     - name: gitRevision
       description: Git revision to check out
+      type: string
       default: main
     - name: namespace
       description: Namespace to push images to
+      type: string
       default: cluster-ninja
   tasks:
     - name: clone-repo

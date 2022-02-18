@@ -1,26 +1,20 @@
-package main
+package api
 
 import (
 	"context"
 	"math/rand"
 	"time"
 
-	k8s "k8s.io/client-go/kubernetes"
+	k8sclient "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
 
-var resourceTypes = []string{
-	"pod",
-	"statefulset",
-	"deployment",
-}
-
 type K8sAPI struct {
-	c   *k8s.Clientset
+	c   *k8sclient.Clientset
 	ctx context.Context
 }
 
-func NewK8sAPI() (*K8sAPI, error) {
+func New() (*K8sAPI, error) {
 	// Create the in-cluster config
 	config, err := rest.InClusterConfig()
 	if err != nil {
@@ -30,7 +24,7 @@ func NewK8sAPI() (*K8sAPI, error) {
 	rand.Seed(time.Now().Unix())
 
 	// Create the clientset
-	clientSet, err := k8s.NewForConfig(config)
+	clientSet, err := k8sclient.NewForConfig(config)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +35,7 @@ func NewK8sAPI() (*K8sAPI, error) {
 	}, nil
 }
 
-func (k *K8sAPI) listResources(namespace, resourceType string) ([]string, error) {
+func (k *K8sAPI) ListResources(namespace, resourceType string) ([]string, error) {
 	switch resourceType {
 	case "pod":
 		return k.listPods(namespace)
@@ -54,7 +48,7 @@ func (k *K8sAPI) listResources(namespace, resourceType string) ([]string, error)
 	}
 }
 
-func (k *K8sAPI) killResource(namespace, resourceType, name string) {
+func (k *K8sAPI) KillResource(namespace, resourceType, name string) {
 	switch resourceType {
 	case "pod":
 		k.killPod(namespace, name)

@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"context"
@@ -57,7 +57,7 @@ func setNamespacesList(c *k8s.Clientset) error {
 	return nil
 }
 
-func (k *K8sAPI) getRandomNamespace() (string, error) {
+func (k *K8sAPI) GetRandomNamespace() (string, error) {
 	if len(nsList) == 0 {
 		err := setNamespacesList(k.c)
 		if err != nil {

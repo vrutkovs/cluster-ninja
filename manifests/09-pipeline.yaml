@@ -1,0 +1,81 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-pipeline
+spec:
+  workspaces:
+    - name: source
+      description: The git repo
+  params:
+    - name: gitUrl
+      description: Git repository url
+    - name: gitRevision
+      description: Git revision to check out
+      default: master
+    - name: namespace
+      description: Namespace to push images to
+      default: cluster-ninja
+  tasks:
+    - name: clone-repo
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: source
+      params:
+        - name: url
+          value: "$(params.gitUrl)"
+        - name: revision
+          value: "$(params.gitRevision)"
+        - name: subdirectory
+          value: "."
+        - name: deleteExisting
+          value: "true"
+    - name: build-backend
+      taskRef:
+        name: buildah
+      runAfter:
+        - clone-repo
+      params:
+        - name: IMAGE
+          value: 'image-registry.openshift-image-registry.svc:5000/$(params.namespace)/cluster-ninja:backend'
+        - name: TLSVERIFY
+          value: 'false'
+        - name: DOCKERFILE
+          value: Dockerfile.backend
+      workspaces:
+        - name: source
+          workspace: source
+    - name: wait-for-backend-rollout
+      taskRef:
+        name: openshift-client
+      params:
+      - name: ARGS
+        value: |
+          -n $(params.namespace) wait --for=condition=available --timeout=60s deployment/backend
+      runAfter:
+      - build-backend
+    - name: build-frontend
+      taskRef:
+        name: buildah
+      runAfter:
+        - clone-repo
+      params:
+        - name: IMAGE
+          value: 'image-registry.openshift-image-registry.svc:5000/$(params.namespace)/cluster-ninja:frontend'
+        - name: TLSVERIFY
+          value: 'false'
+        - name: DOCKERFILE
+          value: Dockerfile.frontend
+      workspaces:
+        - name: source
+          workspace: source
+    - name: wait-for-frontend-rollout
+      taskRef:
+        name: openshift-client
+      params:
+      - name: ARGS
+        value: |
+          -n $(params.namespace) wait --for=condition=available --timeout=60s deployment/frontend
+      runAfter:
+      - build-frontend

@@ -16,6 +16,7 @@ var resourceTypes = []string{
 	"pod",
 	"statefulset",
 	"deployment",
+	"daemonset",
 }
 
 func main() {

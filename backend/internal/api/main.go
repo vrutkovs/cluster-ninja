@@ -50,6 +50,8 @@ func (k *K8sAPI) ListResources(namespace, resourceType string) ([]string, error)
 		return k.listStatefulsets(namespace)
 	case "deployment":
 		return k.listDeployments(namespace)
+	case "daemonset":
+		return k.listDaemonsets(namespace)
 	default:
 		return nil, nil
 	}
@@ -63,5 +65,7 @@ func (k *K8sAPI) KillResource(namespace, resourceType, name string) {
 		k.killStatefulset(namespace, name)
 	case "deployment":
 		k.killDeployment(namespace, name)
+	case "daemonset":
+		k.killDaemonset(namespace, name)
 	}
 }

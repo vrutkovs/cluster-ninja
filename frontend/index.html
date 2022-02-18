@@ -291,9 +291,6 @@
             emitter.x = fruit.x;
             emitter.y = fruit.y;
             emitter.start(true, 2000, null, 4);
-            fruit.kill();
-            points = [];
-            updateScore(score + 1);
 
             if (fruit.key in resources) {
                 var resource = resources[fruit.key];
@@ -307,6 +304,11 @@
                 labels[fruit.key].kill();
                 delete labels[fruit.key];
             }
+
+            fruit.kill();
+            points = [];
+            updateScore(score + 1);
+
         }
 
         function updateScore(_score) {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -67,7 +66,6 @@ func handleGimme(c *gin.Context) {
 			continue
 		}
 		name = resources[rand.Intn(len(resources))]
-		log.Println(fmt.Sprintf("random resource: %s/%s in %s namespace", resourceType, name, namespace))
 	}
 	if len(name) == 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{})
@@ -89,6 +87,5 @@ func handleKill(c *gin.Context) {
 	namespace := c.Param("namespace")
 	resourceType := c.Param("type")
 	name := c.Param("name")
-	log.Println(fmt.Sprintf("Killing %s %s in namespace %s", resourceType, name, namespace))
 	go k8s.KillResource(namespace, resourceType, name)
 }

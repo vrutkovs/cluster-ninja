@@ -24,8 +24,12 @@ var blackListedNamespaces = []string{
 
 var nsList = []string{}
 
-func inClusterLogin() (*k8s.Clientset, error) {
-	// creates the in-cluster config
+type K8sAPI struct {
+	c *k8s.Clientset
+}
+
+func NewK8sAPI() (*K8sAPI, error) {
+	// Create the in-cluster config
 	config, err := rest.InClusterConfig()
 	if err != nil {
 		return nil, err
@@ -33,8 +37,14 @@ func inClusterLogin() (*k8s.Clientset, error) {
 	// Seed random
 	rand.Seed(time.Now().Unix())
 
-	// creates the clientset
-	return k8s.NewForConfig(config)
+	// Create the clientset
+	clientSet, err := k8s.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+	return &K8sAPI{
+		c: clientSet,
+	}, nil
 }
 
 func setNamespacesList(c *k8s.Clientset) error {

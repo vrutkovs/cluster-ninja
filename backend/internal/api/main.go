@@ -5,13 +5,15 @@ import (
 	"math/rand"
 	"time"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8sclient "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
 
 type K8sAPI struct {
-	c   *k8sclient.Clientset
-	ctx context.Context
+	c          *k8sclient.Clientset
+	ctx        context.Context
+	deleteOpts metav1.DeleteOptions
 }
 
 func New() (*K8sAPI, error) {
@@ -29,9 +31,14 @@ func New() (*K8sAPI, error) {
 		return nil, err
 	}
 	ctx := context.TODO()
+	var zero int64 = 0
+	deleteOpts := metav1.DeleteOptions{
+		GracePeriodSeconds: &zero,
+	}
 	return &K8sAPI{
-		c:   clientSet,
-		ctx: ctx,
+		c:          clientSet,
+		ctx:        ctx,
+		deleteOpts: deleteOpts,
 	}, nil
 }
 

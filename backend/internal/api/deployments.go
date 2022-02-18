@@ -22,8 +22,8 @@ func (k *K8sAPI) listDeployments(namespace string) ([]string, error) {
 }
 
 func (k *K8sAPI) killDeployment(namespace, name string) error {
-	if err := k.c.AppsV1().Deployments(namespace).Delete(k.ctx, name, metav1.DeleteOptions{}); err != nil {
-		return fmt.Errorf("failed to kill statefulset: %v", err)
+	if err := k.c.AppsV1().Deployments(namespace).Delete(k.ctx, name, k.deleteOpts); err != nil {
+		return fmt.Errorf("failed to kill deployment: %v", err)
 	}
 	return nil
 }

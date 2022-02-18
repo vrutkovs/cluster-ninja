@@ -16,5 +16,8 @@ spec:
           - pipeline
           - start
           - build-pipeline
+          - --workspace name=source,emptyDir=""
+          - --param gitUrl=https://github.com/vrutkovs/cluster-ninja.git
+          - --param gitRevision=main
       serviceAccountName: pipeline
       restartPolicy: OnFailure

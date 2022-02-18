@@ -17,7 +17,7 @@ spec:
           - start
           - build-pipeline
           - --workspace
-          - name=source,emptyDir=""
+          - name=source,claimName=builds
           - --param
           - namespace=cluster-ninja
           - --param

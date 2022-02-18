@@ -19,6 +19,8 @@ spec:
           - --workspace
           - name=source,emptyDir=""
           - --param
+          - namespace=cluster-ninja
+          - --param
           - gitUrl=https://github.com/vrutkovs/cluster-ninja.git
           - --param
           - gitRevision=main

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    image.openshift.io/triggers: |
+      [
+        {"from":{"kind":"ImageStreamTag","name":"hunt-ui:webserver"},"fieldPath":"spec.template.spec.containers[?(@.name==\"hunt-ui\")].image"}
+      ]
+  labels:
+    app: hunt-ui
+  name: hunt-ui
+  namespace: pod-hunt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hunt-ui
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: hunt-ui
+    spec:
+      containers:
+        - image: ' '
+          imagePullPolicy: Always
+          name: hunt-ui
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

@@ -1,0 +1,13 @@
+---
+apiVersion: build.dev/v1alpha1
+kind: BuildRun
+metadata:
+  generateName: backend-buildrun-
+  namespace: pod-hunt
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+spec:
+  buildRef:
+    name: backend-build
+  serviceAccount:
+    name: pipeline

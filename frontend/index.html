@@ -20,6 +20,11 @@
     <div id="game"></div>
 
     <script>
+        // Local debugging
+        var backend = "http://localhost:8081"
+        // Production - use the same URL
+        // var backend = ""
+
         var w = window.innerWidth,
             h = window.innerHeight;
 
@@ -251,6 +256,7 @@
             fruit.kill();
             points = [];
             updateScore(score + 1);
+            fetch(backend+'/kill');
         }
 
         function updateScore(_score) {

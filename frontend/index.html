@@ -289,7 +289,7 @@
             emitter.start(true, 2000, null, 4);
 
             var resource = fruit.data;
-            if (typeof resource != "undefined") {
+            if (typeof resource !== "undefined" && typeof resource.name !== "undefined") {
                 fetch(
                     backend+'/destroy/ns/'+resource.namespace+"/"+resource.type+"/"+resource.name,
                     {method: 'POST'});

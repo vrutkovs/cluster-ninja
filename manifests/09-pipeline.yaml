@@ -32,7 +32,7 @@ spec:
         - name: revision
           value: "$(params.gitRevision)"
         - name: subdirectory
-          value: "."
+          value: "src"
         - name: deleteExisting
           value: "true"
     - name: build-backend
@@ -47,7 +47,9 @@ spec:
         - name: TLSVERIFY
           value: 'false'
         - name: DOCKERFILE
-          value: Dockerfile.backend
+          value: src/Dockerfile.backend
+        - name: CONTEXT
+          value: src
       workspaces:
         - name: source
           workspace: source
@@ -75,7 +77,9 @@ spec:
         - name: TLSVERIFY
           value: 'false'
         - name: DOCKERFILE
-          value: Dockerfile.frontend
+          value: src/Dockerfile.frontend
+        - name: CONTEXT
+          value: src
       workspaces:
         - name: source
           workspace: source

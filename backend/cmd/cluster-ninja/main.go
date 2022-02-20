@@ -47,36 +47,35 @@ func handleGimme(c *gin.Context) {
 	if !ok {
 		log.Panic("Failed to get k8s api")
 	}
-	var namespace, resourceType, name string
-	var resources []string
-	var err error
+	var headers gin.H
 	for i := 0; i < attempts; i++ {
 		// Get random namespace
-		namespace, err = k8s.GetRandomNamespace()
+		namespace, err := k8s.GetRandomNamespace()
 		if err != nil {
 			log.Panic("Failed to get random namespace")
 		}
 
 		// Get random resource type
-		resourceType = resourceTypes[rand.Intn(len(resourceTypes))]
+		resourceType := resourceTypes[rand.Intn(len(resourceTypes))]
 		// Get resource names of selected type in selected namespace
-		resources, err = k8s.ListResources(namespace, resourceType)
+		resources, err := k8s.ListResources(namespace, resourceType)
 		if err != nil {
 			// Restart again
 			continue
 		}
-		name = resources[rand.Intn(len(resources))]
+		name := resources[rand.Intn(len(resources))]
+		headers = gin.H{
+			"namespace": namespace,
+			"type":      resourceType,
+			"name":      name,
+		}
+		break
 	}
-	if len(name) == 0 {
+	if headers == nil {
 		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+	} else {
+		c.JSON(http.StatusOK, headers)
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"namespace": namespace,
-		"type":      resourceType,
-		"name":      name,
-	})
 }
 
 func handleKill(c *gin.Context) {

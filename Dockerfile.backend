@@ -1,9 +1,9 @@
 FROM registry.access.redhat.com/ubi8/go-toolset:1.16.12 AS builder
+USER 0
 ENV GOPATH /go
 WORKDIR /go/src/github.com/vrutkovs/cluster-ninja
 COPY backend/ .
 RUN go build ./cmd/cluster-ninja/
-
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
 COPY --from=builder /go/src/github.com/vrutkovs/cluster-ninja/cluster-ninja /bin/cluster-ninja

@@ -1,5 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.5 AS builder
 RUN dnf install -y golang && dnf clean all
+ENV GOPATH /go
 WORKDIR /go/src/github.com/vrutkovs/cluster-ninja
 COPY backend/ .
 RUN go mod vendor && go build ./cmd/cluster-ninja/

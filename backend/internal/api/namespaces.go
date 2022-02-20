@@ -12,8 +12,7 @@ import (
 
 var skipNamespaces = []string{
 	"openshift-cluster-version", // CVO won't bring itself back
-	"openshift-etcd",            // This may kill etcd pod and cause outage
-	"openshift-ingress",         // This may remove ingress pods and backend would stop responding
+	"openshift-ingress",         // Killing routers will halt the game for some time, its not fun
 }
 
 func (k *K8sAPI) updateNamespaces() {

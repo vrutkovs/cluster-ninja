@@ -141,6 +141,11 @@
             var obj = getRandomDead(good_objects);
 
             getRandomResource().then(resource => {
+                // Exit early if we failed to get the object
+                if (typeof resource == "undefined") {
+                    return
+                }
+
                 resourceText = "ns/"+ resource.namespace + "\n"+resource.type + "/" + resource.name;
                 if (obj.children.length == 0) {
                     var label = game.add.text(0, 0, resourceText, label_style);

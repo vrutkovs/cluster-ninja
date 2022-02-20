@@ -2,9 +2,11 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	"time"
 
+	"github.com/kelseyhightower/envconfig"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8sclient "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -14,9 +16,19 @@ type K8sAPI struct {
 	c          *k8sclient.Clientset
 	ctx        context.Context
 	deleteOpts metav1.DeleteOptions
+	namespaces []string
+
+	NamespaceOverride string `envconfig:"NAMESPACE"`
 }
 
 func New() (*K8sAPI, error) {
+	var k8sapi K8sAPI
+	// Read env config
+	err := envconfig.Process("", &k8sapi)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read config from env vars")
+	}
+
 	// Create the in-cluster config
 	config, err := rest.InClusterConfig()
 	if err != nil {
@@ -30,16 +42,22 @@ func New() (*K8sAPI, error) {
 	if err != nil {
 		return nil, err
 	}
-	ctx := context.TODO()
+	k8sapi.c = clientSet
+	k8sapi.ctx = context.TODO()
+
+	// Set shared DeleteOptions
 	var zero int64 = 0
-	deleteOpts := metav1.DeleteOptions{
+	k8sapi.deleteOpts = metav1.DeleteOptions{
 		GracePeriodSeconds: &zero,
 	}
-	return &K8sAPI{
-		c:          clientSet,
-		ctx:        ctx,
-		deleteOpts: deleteOpts,
-	}, nil
+	if len(k8sapi.NamespaceOverride) > 0 {
+		k8sapi.namespaces = []string{k8sapi.NamespaceOverride}
+	} else {
+		k8sapi.updateNamespaces()
+		go k8sapi.runPeriodicNamespaceUpdate()
+	}
+
+	return &k8sapi, nil
 }
 
 func (k *K8sAPI) ListResources(namespace, resourceType string) ([]string, error) {

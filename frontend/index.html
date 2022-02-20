@@ -302,11 +302,11 @@
         }
 
         function updateScore() {
-            var labelText = "";
+            var labelParts = [];
             for (const [key, value] of Object.entries(score)) {
-                labelText += `${key} : ${value}, `;
+                labelParts.push(`${key}s: ${value}`);
             }
-            scoreLabel.text = labelText;
+            scoreLabel.text = labelParts.join(", ");
             scoreLabel.fill = '#9adcfa';
         }
 

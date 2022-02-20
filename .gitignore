@@ -1,1 +1,2 @@
-/backend/cluster_ninja
+/backend/cmd/cluster-ninja/__debug_bin
+/.vscode

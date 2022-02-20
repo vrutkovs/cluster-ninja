@@ -20,6 +20,7 @@ var resourceTypes = []string{
 
 func main() {
 	r := gin.Default()
+	r.SetTrustedProxies(nil)
 	r.Use(K8S())
 	api := r.Group("/api")
 	{

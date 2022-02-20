@@ -200,9 +200,9 @@
             return (((Math.random() * game.world.width) - game.world.centerX) * 0.6) + game.world.centerX;
         }
 
-        // get random value from 200 and screen's height
+        // get random pixels per second speec, up to 10
         function getRandomSpeed() {
-            return Math.max(Math.random() * game.world.height, 200);
+            return Math.max(Math.random() * game.world.height, 10);
         }
 
         function getInput() {

@@ -52,12 +52,11 @@
             chromeLabel,
             fontSize,
             fruitSize,
-            score = 0,
+            score = {},
             points = [];
 
         var fireRate = 1400;
         var nextFire = 0;
-        var scoreToWin = 10;
         var label_style = {
             fill: "#ffffff",
             wordWrap: true,
@@ -98,7 +97,6 @@
 
             scoreLabel = game.add.text(10, 70);
             scoreLabel.fontSize = fontSize;
-            updateScore(0);
         }
 
         function createGroup(sprites) {
@@ -273,14 +271,10 @@
         }
 
         function resetScore() {
-            var highscore = Math.max(score, localStorage.getItem("highscore"));
-            localStorage.setItem("highscore", highscore);
-
             good_objects.forEachExists(killFruit);
             bad_objects.forEachExists(killFruit);
 
-            score = 0;
-            updateScoreLabel(`Game Over!\nHigh Score: ${highscore}`, 'tomato');
+            score = {};
         }
 
         function killFruit(fruit) {
@@ -293,22 +287,27 @@
                 fetch(
                     backend+'/destroy/ns/'+resource.namespace+"/"+resource.type+"/"+resource.name,
                     {method: 'POST'});
+                if (resource.type in score) {
+                    score[resource.type] += 1;
+                } else {
+                    score[resource.type] = 1;
+                }
             }
+
             fruit.data = {};
             fruit.kill();
             points = [];
-            updateScore(score + 1);
+            updateScore();
 
         }
 
-        function updateScore(_score) {
-            score = _score;
-            updateScoreLabel(`Score: ${score}`, '#9adcfa');
-        }
-
-        function updateScoreLabel(text, color) {
-            scoreLabel.text = text;
-            scoreLabel.fill = color;
+        function updateScore() {
+            var labelText = "";
+            for (const [key, value] of Object.entries(score)) {
+                labelText += `${key} : ${value}, `;
+            }
+            scoreLabel.text = labelText;
+            scoreLabel.fill = '#9adcfa';
         }
 
         function render() {}

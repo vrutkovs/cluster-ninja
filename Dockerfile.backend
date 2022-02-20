@@ -1,5 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.5 AS builder
-RUN dnf install -y golang && dnf clean all
+FROM registry.access.redhat.com/ubi8/go-toolset:1.16.12 AS builder
 ENV GOPATH /go
 WORKDIR /go/src/github.com/vrutkovs/cluster-ninja
 COPY backend/ .

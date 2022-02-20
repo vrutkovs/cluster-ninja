@@ -24,5 +24,6 @@ spec:
           - gitUrl=https://github.com/vrutkovs/cluster-ninja.git
           - --param
           - gitRevision=main
+          - --showlog
       serviceAccountName: pipeline
       restartPolicy: OnFailure

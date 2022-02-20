@@ -265,16 +265,14 @@
                 if (fruit.parent == good_objects) {
                     killFruit(fruit);
                 } else {
-                    resetScore();
+                    killEmAll();
                 }
             }
         }
 
-        function resetScore() {
+        function killEmAll() {
             good_objects.forEachExists(killFruit);
             bad_objects.forEachExists(killFruit);
-
-            score = {};
         }
 
         function killFruit(fruit) {

@@ -185,9 +185,9 @@
             return deadChildren[randIndex];
         }
 
-        // get random value between -50 and 50
+        // get random value between -10 and 50
         function getRandomAngularAcceleration() {
-            return ((Math.random() * 2) - 1) * 50;
+            return Math.floor(Math.random() * (50 + 10 + 1)) - 10;
         }
 
         // get random angle between -10 and 10

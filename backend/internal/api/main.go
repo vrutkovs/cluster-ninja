@@ -4,12 +4,15 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/kelseyhightower/envconfig"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8sclient "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 type K8sAPI struct {
@@ -23,22 +26,40 @@ type K8sAPI struct {
 
 func New() (*K8sAPI, error) {
 	var k8sapi K8sAPI
+
+	// Seed random
+	rand.Seed(time.Now().Unix())
+
 	// Read env config
 	err := envconfig.Process("", &k8sapi)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config from env vars")
 	}
 
-	// Create the in-cluster config
-	config, err := rest.InClusterConfig()
-	if err != nil {
-		return nil, err
+	// Read kubeconfig from env var or in-cluster
+	var restconfig *rest.Config
+	// Try to read KUBECONFIG env var
+	kubeconfig := os.Getenv("KUBECONFIG")
+	if kubeconfig == "" {
+		kubeconfig = filepath.Join(
+			os.Getenv("HOME"), ".kube", "config",
+		)
 	}
-	// Seed random
-	rand.Seed(time.Now().Unix())
+	restconfig, err = clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		// Try to read config from in-cluster configuration
+		configLoader := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+			clientcmd.NewDefaultClientConfigLoadingRules(),
+			&clientcmd.ConfigOverrides{},
+		)
+		restconfig, err = configLoader.ClientConfig()
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	// Create the clientset
-	clientSet, err := k8sclient.NewForConfig(config)
+	clientSet, err := k8sclient.NewForConfig(restconfig)
 	if err != nil {
 		return nil, err
 	}
@@ -50,6 +71,8 @@ func New() (*K8sAPI, error) {
 	k8sapi.deleteOpts = metav1.DeleteOptions{
 		GracePeriodSeconds: &zero,
 	}
+
+	// Initialize namespaces list
 	if len(k8sapi.NamespaceOverride) > 0 {
 		k8sapi.namespaces = []string{k8sapi.NamespaceOverride}
 	} else {

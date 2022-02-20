@@ -146,7 +146,7 @@
                 resourceText = "ns/"+ resource.namespace + "\n"+resource.type + "/" + resource.name;
                 if (obj.children.length == 0) {
                     var label = game.add.text(0, 0, resourceText, label_style);
-                    label.setTextBounds(0, 100, 800, 100);
+                    label.setTextBounds(0, 0, fruitSize, fruitSize);
                     label.alpha = 0.7;
                     obj.addChild(label);
                 } else {

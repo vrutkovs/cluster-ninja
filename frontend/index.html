@@ -125,7 +125,7 @@
             if (game.time.now > nextFire && good_objects.countDead() > 0 && bad_objects.countDead() > 0) {
                 nextFire = game.time.now + fireRate;
                 throwGoodObject();
-                if (Math.random() > .5) {
+                if (Math.random() > .75) {
                     throwBadObject();
                 }
             }

@@ -188,9 +188,9 @@
             return deadChildren[randIndex];
         }
 
-        // get random value between -10 and 50
+        // get random value between 5 and 50
         function getRandomAngularAcceleration() {
-            return Math.floor(Math.random() * (50 + 10 + 1)) - 10;
+            return Math.floor(Math.random() * (50 - 5 + 1)) + 5;
         }
 
         // get random angle between -10 and 10
@@ -203,7 +203,7 @@
             return (((Math.random() * game.world.width) - game.world.centerX) * 0.6) + game.world.centerX;
         }
 
-        // get random pixels per second speec, up to 10
+        // get random pixels per second speec, up to 50
         function getRandomSpeed() {
             return Math.max(Math.random() * game.world.height, 10);
         }

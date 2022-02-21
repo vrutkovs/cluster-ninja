@@ -1,0 +1,10 @@
+kind: PodDisruptionBudget
+apiVersion: policy/v1
+metadata:
+  name: frontend
+spec:
+  minAvailable: 33%
+  selector:
+    matchLabels:
+      app: cluster-ninja
+      component: frontend

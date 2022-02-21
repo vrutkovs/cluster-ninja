@@ -165,7 +165,7 @@
                 obj.reset(getRandomX(), game.world.height);
                 obj.data = resource;
                 var speed = getRandomSpeed()
-                console.log(`type: ${obj.key} angular: ${obj.body.angularAcceleration} x: ${obj.x} y: ${obj.y} angle: ${angle} speed: ${speed}`)
+                console.log(`type: ${obj.key} angular: ${obj.body.angularAcceleration} x: ${obj.x} y: ${obj.y} angle: ${obj.angle} speed: ${speed}`)
                 game.physics.arcade.moveToXY(obj, game.world.centerX, game.world.centerY, speed);
             })
         }

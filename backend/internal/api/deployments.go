@@ -22,6 +22,11 @@ func (k *K8sAPI) listDeployments(namespace string) ([]string, error) {
 }
 
 func (k *K8sAPI) killDeployment(namespace, name string) error {
+	// Don't kill frontend/backend deployments, if apiserver is down it won't be able to bring pods back
+	if name == "frontend" || name == "backend" {
+		return nil
+	}
+
 	if err := k.c.AppsV1().Deployments(namespace).Delete(k.ctx, name, k.deleteOpts); err != nil {
 		return fmt.Errorf("failed to kill deployment: %v", err)
 	}

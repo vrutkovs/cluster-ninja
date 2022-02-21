@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cluster-ninja
+  name: build-pipeline
   namespace: openshift-gitops
 spec:
   destination:
-    namespace: cluster-ninja
+    namespace: build-pipeline
     server: 'https://kubernetes.default.svc'
   project: default
   source:
-    path: manifests/deploy
+    path: manifests/pipeline
     repoURL: 'https://github.com/vrutkovs/cluster-ninja'
     targetRevision: HEAD
   syncPolicy:
@@ -17,8 +17,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-  ignoreDifferences:
-    - group: apps
-      kind: Deployment
-      jsonPointers:
-      - /spec/template/spec/containers/0/image

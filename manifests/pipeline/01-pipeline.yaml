@@ -14,8 +14,12 @@ spec:
       description: Git revision to check out
       type: string
       default: main
-    - name: namespace
-      description: Namespace to push images to
+    - name: build-namespace
+      description: Namespace used for image builds
+      type: string
+      default: build-pipeline
+    - name: promote-namespace
+      description: Target deploy namespace
       type: string
       default: cluster-ninja
   tasks:
@@ -58,7 +62,7 @@ spec:
         - prepare-go-cache
       params:
         - name: IMAGE
-          value: 'image-registry.openshift-image-registry.svc:5000/$(params.namespace)/cluster-ninja:backend'
+          value: 'image-registry.openshift-image-registry.svc:5000/$(params.build-namespace)/cluster-ninja:backend'
         - name: TLSVERIFY
           value: 'false'
         - name: DOCKERFILE
@@ -70,18 +74,6 @@ spec:
       workspaces:
         - name: source
           workspace: source
-    - name: wait-for-backend-rollout
-      taskRef:
-        name: openshift-client
-        kind: ClusterTask
-      params:
-      - name: VERSION
-        value: latest
-      - name: SCRIPT
-        value: |
-          oc -n $(params.namespace) wait --for=condition=available --timeout=60s deployment/backend
-      runAfter:
-      - build-backend
     - name: build-frontend
       taskRef:
         name: buildah
@@ -90,7 +82,7 @@ spec:
         - clone-repo
       params:
         - name: IMAGE
-          value: 'image-registry.openshift-image-registry.svc:5000/$(params.namespace)/cluster-ninja:frontend'
+          value: 'image-registry.openshift-image-registry.svc:5000/$(params.build-namespace)/cluster-ninja:frontend'
         - name: TLSVERIFY
           value: 'false'
         - name: DOCKERFILE
@@ -100,6 +92,32 @@ spec:
       workspaces:
         - name: source
           workspace: source
+    - name: promote-builds
+      taskRef:
+        name: openshift-client
+        kind: ClusterTask
+      params:
+      - name: VERSION
+        value: latest
+      - name: SCRIPT
+        value: |
+          oc -n $(params.promote-namespace) tag $(params.build-namespace)/cluster-ninja:backend $(params.promote-namespace)/cluster-ninja:backend && \
+          oc -n $(params.promote-namespace) tag $(params.build-namespace)/cluster-ninja:frontend $(params.promote-namespace)/cluster-ninja:frontend
+      runAfter:
+      - build-backend
+      - build-frontend
+    - name: wait-for-backend-rollout
+      taskRef:
+        name: openshift-client
+        kind: ClusterTask
+      params:
+      - name: VERSION
+        value: latest
+      - name: SCRIPT
+        value: |
+          oc -n $(params.promote-namespace) wait --for=condition=available --timeout=60s deployment/frontend
+      runAfter:
+      - promote-builds
     - name: wait-for-frontend-rollout
       taskRef:
         name: openshift-client
@@ -109,6 +127,6 @@ spec:
         value: latest
       - name: SCRIPT
         value: |
-          oc -n $(params.namespace) wait --for=condition=available --timeout=60s deployment/frontend
+          oc -n $(params.promote-namespace) wait --for=condition=available --timeout=60s deployment/frontend
       runAfter:
-      - build-frontend
+      - promote-builds

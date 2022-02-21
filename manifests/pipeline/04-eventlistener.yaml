@@ -1,0 +1,32 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: github-listener
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - bindings:
+        - ref: github-push
+          kind: ClusterTriggerBinding
+      template:
+        spec:
+          params:
+            - name: git-revision
+            - name: git-repo-url
+          resourcetemplates:
+            - apiVersion: tekton.dev/v1beta1
+              kind: PipelineRun
+              metadata:
+                generateName: push-to-master-
+              spec:
+                pipelineRef:
+                  name: build-pipeline
+                params:
+                  - name: gitRevision
+                    value: $(tt.params.git-revision)
+                  - name: gitUrl
+                    value: $(tt.params.git-repo-url)
+                workspaces:
+                  - name: source
+                    persistentVolumeClaim:
+                      claimName: builds
